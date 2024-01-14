@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:dnl_ui/pages/messageFlow/Chat.dart';
+import 'package:dnl_ui/pages/messageFlow/Message.dart';
 import 'package:flutter/material.dart';
 
 import 'pages/WelcomePage.dart';
@@ -15,7 +17,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       // Set the welcome screen as the home page
-      home: WelcomePage(),
+      // home: WelcomePage(),
+       home: MessagePage(),
+      // home:ChatScreen(),
       
       // Optional: Remove the debug banner
       debugShowCheckedModeBanner: false,

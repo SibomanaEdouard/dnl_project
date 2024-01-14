@@ -1,3 +1,5 @@
+import 'package:dnl_ui/components/CustomButton.dart';
+import 'package:dnl_ui/pages/messageFlow/Chat.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -7,15 +9,23 @@ class Friend {
 
   Friend(this.name, this.avatar);
 }
-class MessageTemplate{
+
+class MessageTemplate {
   String description;
   DateTime date;
   Friend sender;
   Friend receiver;
-  MessageTemplate(this.sender,this.receiver,this.description,this.date);
+  MessageTemplate(this.sender, this.receiver, this.description, this.date);
 }
-List<MessageTemplate> messageList = [];
-class Message extends StatelessWidget {
+
+class MessagePage extends StatefulWidget {
+  final String emptyImage = 'assets/icons/empty_message.svg';
+
+  @override
+  _MessagePageState createState() => _MessagePageState();
+}
+class _MessagePageState extends State<MessagePage> 
+ {
   final String emptyImage = 'assets/icons/empty_message.svg';
 
   List<Friend> friendList = [
@@ -25,8 +35,14 @@ class Message extends StatelessWidget {
     Friend("Dean", "assets/images/profile4.jpeg"),
     Friend("Max", "assets/images/profile5.png")
   ];
-  List <MessageTemplate> messageList=[
-    MessageTemplate(Friend("Alex Linderson","assets/images/profile1.png"),Friend("Jennifer smith","assets/images/profile3.png"), "How are you",DateTime.now() )
+
+  List<MessageTemplate> messageList = [
+    MessageTemplate(
+      Friend("Alex Linderson", "assets/images/profile1.png"),
+      Friend("Jennifer smith", "assets/images/profile3.png"),
+      "How are you",
+      DateTime.now(),
+    ),
   ];
 
   @override
@@ -64,33 +80,46 @@ class Message extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   for (Friend friend in friendList)
-                    Container(
-                      width: 50,
-                      height: 50,
-                      margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                      
-                        color: Colors.white,
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(30),
-                        child: Image.asset(
-                          friend.avatar,
-                          fit: BoxFit.cover,
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) {
+                            return ChatScreen();
+                          }),
+                        );
+                      },
+                      child: Column(children: [
+                        Container(
+                          width: 50,
+                          height: 50,
+                          margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(30),
+                            color: Colors.white,
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(30),
+                            child: Image.asset(
+                              friend.avatar,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
                         ),
-                      ),
+                        Text(friend.name, style: TextStyle(color: Colors.white)),
+                      ]),
                     ),
                 ],
               ),
             ),
-            
           Flexible(
             flex: 1,
             child: Container(
               width: double.infinity,
               height: double.infinity,
-              padding:messageList.isEmpty?const EdgeInsets.only(top: 80.0, bottom: 80):const EdgeInsets.only(top: 30,bottom: 30,left: 33,right: 33),
+              padding: messageList.isEmpty
+                  ? const EdgeInsets.only(top: 80.0, bottom: 80)
+                  : const EdgeInsets.only(top: 30, bottom: 30, left: 33, right: 33),
               decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
@@ -101,66 +130,110 @@ class Message extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  
                   const SizedBox(width: double.infinity),
-                  if (messageList.isNotEmpty) Column(children: [ for (MessageTemplate message in messageList) Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Container(
-                      width: 52,
-                      height: 52,
-                      margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                      
-                        color: Colors.white,
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(30),
-                        child: Image.asset(
-                          message.sender.avatar,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    )
-                    ,Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [Text(message.sender.name,style:const  TextStyle(fontSize: 20,fontWeight: FontWeight.bold)),Text(message.description,style:const TextStyle(color:const Color(0xff797c7b),fontWeight:FontWeight.w400, ),)],
-                    ), Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [const Text("2 min ago",style: TextStyle(color: Color(0xff797c7b),fontWeight:FontWeight.w400,fontSize: 12 ),),
-                    const SizedBox(height: 7),
-                       Container(
-                       
-                        width: 21,
-                        height: 21,
-                        padding: const EdgeInsets.symmetric(vertical: 2,horizontal: 6),
-                        decoration:  BoxDecoration(color: Colors.red,borderRadius: BorderRadius.circular(10)),
-                        
-                        
-                        child: const Text("3",style: TextStyle(color: Colors.white),),
-                      )],
-                    )],
-                  )],),
-                  if(messageList.isEmpty)
-                  SvgPicture.asset(emptyImage),
-                  if(messageList.isEmpty)
-                  const SizedBox(height: 16.0),
-                  if(messageList.isEmpty)
-                  const SizedBox(
-                    width: double.infinity,
-                    height: 70,
-                  ),
-                  if(messageList.isEmpty)
-                  const Text(
-                    'You have no message yet',
-                    style: TextStyle(
-                      fontSize: 24.0,
-                      fontWeight: FontWeight.bold,
+                  if (messageList.isNotEmpty)
+                    Column(
+                      children: [
+                        for (MessageTemplate message in messageList)
+                          Dismissible(
+                            key: UniqueKey(),
+                          
+                            onDismissed: (direction) {
+                              _showDeleteConfirmation(context, message);
+                            },
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) {
+                                    return ChatScreen();
+                                  }),
+                                );
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                children: [
+                                  Container(
+                                    width: 52,
+                                    height: 52,
+                                    margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(30),
+                                      color: Colors.white,
+                                    ),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(30),
+                                      child: Image.asset(
+                                        message.sender.avatar,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(message.sender.name,
+                                          style: const TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold)),
+                                      Text(
+                                        message.description,
+                                        style: const TextStyle(
+                                          color: const Color(0xff797c7b),
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      const Text(
+                                        "2 min ago",
+                                        style: TextStyle(
+                                            color: Color(0xff797c7b),
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 12),
+                                      ),
+                                      const SizedBox(height: 7),
+                                      Container(
+                                        width: 21,
+                                        height: 21,
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 2, horizontal: 6),
+                                        decoration: BoxDecoration(
+                                            color: Colors.red,
+                                            borderRadius: BorderRadius.circular(10)),
+                                        child: const Text(
+                                          "3",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      )
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
-                  ),
+                  if (messageList.isEmpty) SvgPicture.asset(emptyImage),
+                  if (messageList.isEmpty) const SizedBox(height: 16.0),
+                  if (messageList.isEmpty)
+                    const SizedBox(
+                      width: double.infinity,
+                      height: 70,
+                    ),
+                  if (messageList.isEmpty)
+                    const Text(
+                      'You have no message yet',
+                      style: TextStyle(
+                        fontSize: 24.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -169,6 +242,31 @@ class Message extends StatelessWidget {
       ),
     );
   }
+
+  Future<void> _showDeleteConfirmation(BuildContext context, MessageTemplate message) async {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Delete Message?"),
+          content: const Text("Are you sure you want to delete this message?"),
+          actions: <Widget>[
+            CustomButton(title:"Cancel", color: Colors.transparent, textColor: Colors.red, borderColor: Colors.red, onPressed: () => Navigator.of(context).pop()),
+            CustomButton(title:"Delete", color: Colors.red, textColor: Colors.white, borderColor: Colors.transparent, onPressed:() {
+                // Perform the delete operation
+                setState(() {
+                  messageList.remove(message);
+                });
+                Navigator.of(context).pop();
+                })
+
+            
+
+              
+,
+          ],
+        );
+      },
+    );
+  }
 }
-
-
