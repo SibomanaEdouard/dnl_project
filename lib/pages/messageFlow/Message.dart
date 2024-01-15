@@ -2,6 +2,7 @@ import 'package:dnl_ui/components/CustomButton.dart';
 import 'package:dnl_ui/pages/messageFlow/Chat.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+// lib/components/call.dart
 
 class Friend {
   String name;
