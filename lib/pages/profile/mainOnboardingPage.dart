@@ -3,6 +3,7 @@
 import 'package:dnl_ui/pages/profile/drink.dart';
 import 'package:dnl_ui/pages/profile/name.dart';
 import 'package:dnl_ui/pages/profile/smoke.dart';
+import 'package:dnl_ui/pages/profile/video_photo.dart';
 import 'package:flutter/material.dart';
 import '../../components/indicator.dart';
 import 'birthDay.dart';
@@ -148,6 +149,21 @@ class _MainOnboardingPageState extends State<MainOnboardingPage> {
                             ),
                           ],
                         );
+                      }else if(index==7){
+                                                return Column(
+                          children: [
+                            Container(
+                              width: double.infinity,
+                              height: MediaQuery.of(context).size.height - 105,
+                              color: Colors.white,
+                              child: Center(
+                                child: VideoPhotoPage(),
+                              ),
+                            ),
+                          ],
+                        );
+                        
+
                       }
                       // Your pages here (names(), names(), ...)
                     },

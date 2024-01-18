@@ -2,6 +2,7 @@
 
 import 'package:dnl_ui/pages/messageFlow/Chat.dart';
 import 'package:dnl_ui/pages/messageFlow/Message.dart';
+import 'package:dnl_ui/pages/settingFlow/setting_main.dart';
 import 'package:dnl_ui/pages/subscriptionFlow/SubscriptionPage.dart';
 import 'package:flutter/material.dart';
 
