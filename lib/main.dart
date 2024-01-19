@@ -4,6 +4,7 @@ import 'package:dnl_ui/pages/messageFlow/Chat.dart';
 import 'package:dnl_ui/pages/messageFlow/Message.dart';
 import 'package:dnl_ui/pages/settingFlow/setting_main.dart';
 import 'package:dnl_ui/pages/subscriptionFlow/SubscriptionPage.dart';
+import 'package:dnl_ui/pages/subscriptionFlow/payment/Payment.dart';
 import 'package:flutter/material.dart';
 
 import 'pages/WelcomePage.dart';
@@ -22,7 +23,8 @@ class MyApp extends StatelessWidget {
       // home: WelcomePage(),
       //  home: MessagePage(),
       // home:ChatScreen(),
-      home:SubscriptionPage(),
+      // home:SubscriptionPage(),
+      home: Payment(),
       
       
       // Optional: Remove the debug banner
@@ -30,3 +32,4 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
