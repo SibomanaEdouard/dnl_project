@@ -19,7 +19,7 @@ class CountryPicker extends StatelessWidget {
       //     initialCountryCode: 'US',
       //   ),
       // )
-      // ),
+    // ),child: Padding
       padding: EdgeInsets.all(20),
       child: IntlPhoneField(
         decoration: const InputDecoration(

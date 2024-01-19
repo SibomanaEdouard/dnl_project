@@ -25,8 +25,8 @@ class MessagePage extends StatefulWidget {
   @override
   _MessagePageState createState() => _MessagePageState();
 }
-class _MessagePageState extends State<MessagePage> 
- {
+
+class _MessagePageState extends State<MessagePage> {
   final String emptyImage = 'assets/icons/empty_message.svg';
 
   List<Friend> friendList = [
@@ -107,7 +107,8 @@ class _MessagePageState extends State<MessagePage>
                             ),
                           ),
                         ),
-                        Text(friend.name, style: TextStyle(color: Colors.white)),
+                        Text(friend.name,
+                            style: const TextStyle(color: Colors.white)),
                       ]),
                     ),
                 ],
@@ -120,7 +121,8 @@ class _MessagePageState extends State<MessagePage>
               height: double.infinity,
               padding: messageList.isEmpty
                   ? const EdgeInsets.only(top: 80.0, bottom: 80)
-                  : const EdgeInsets.only(top: 30, bottom: 30, left: 33, right: 33),
+                  : const EdgeInsets.only(
+                      top: 30, bottom: 30, left: 33, right: 33),
               decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
@@ -138,9 +140,8 @@ class _MessagePageState extends State<MessagePage>
                         for (MessageTemplate message in messageList)
                           Dismissible(
                             key: UniqueKey(),
-                          
                             onDismissed: (direction) {
-                              _showDeleteConfirmation(context, message);
+                              DeleteMessageDialog();
                             },
                             child: GestureDetector(
                               onTap: () {
@@ -152,12 +153,14 @@ class _MessagePageState extends State<MessagePage>
                                 );
                               },
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
                                 children: [
                                   Container(
                                     width: 52,
                                     height: 52,
-                                    margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 4.0),
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(30),
                                       color: Colors.white,
@@ -172,7 +175,8 @@ class _MessagePageState extends State<MessagePage>
                                   ),
                                   Column(
                                     mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(message.sender.name,
                                           style: const TextStyle(
@@ -206,7 +210,8 @@ class _MessagePageState extends State<MessagePage>
                                             vertical: 2, horizontal: 6),
                                         decoration: BoxDecoration(
                                             color: Colors.red,
-                                            borderRadius: BorderRadius.circular(10)),
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
                                         child: const Text(
                                           "3",
                                           style: TextStyle(color: Colors.white),
@@ -243,31 +248,32 @@ class _MessagePageState extends State<MessagePage>
       ),
     );
   }
+}
 
-  Future<void> _showDeleteConfirmation(BuildContext context, MessageTemplate message) async {
-    return showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Delete Message?"),
-          content: const Text("Are you sure you want to delete this message?"),
-          actions: <Widget>[
-            CustomButton(title:"Cancel", color: Colors.transparent, textColor: Colors.red, borderColor: Colors.red, onPressed: () => Navigator.of(context).pop()),
-            CustomButton(title:"Delete", color: Colors.red, textColor: Colors.white, borderColor: Colors.transparent, onPressed:() {
-                // Perform the delete operation
-                setState(() {
-                  messageList.remove(message);
-                });
-                Navigator.of(context).pop();
-                })
-
-            
-
-              
-,
-          ],
-        );
-      },
+class DeleteMessageDialog extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Confirmation'),
+      content: const Text('Do you want to delete this message?'),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () {
+            // Close the dialog when the Close button is pressed
+            Navigator.of(context).pop();
+          },
+          child: const Text('Close'),
+        ),
+        TextButton(
+          onPressed: () {
+            // Perform the delete action when the Confirm button is pressed
+            // You can add your delete logic here
+            // For now, just close the dialog
+            Navigator.of(context).pop();
+          },
+          child: const Text('Confirm'),
+        ),
+      ],
     );
   }
 }

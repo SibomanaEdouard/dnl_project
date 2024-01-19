@@ -27,7 +27,8 @@ class _PrivacyPageState extends State<PrivacyPage> {
       ),
     
     
-      body: Padding(
+      body: 
+      SingleChildScrollView(child:Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -54,7 +55,8 @@ class _PrivacyPageState extends State<PrivacyPage> {
             ),
           ],
         ),
-      ),
+      ),)
+      
     );
   }
 }
