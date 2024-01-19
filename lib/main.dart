@@ -19,11 +19,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       // Set the welcome screen as the home page
-      // home: WelcomePage(),
+      home: WelcomePage(),
       //  home: MessagePage(),
       // home:ChatScreen(),
-      home:SubscriptionPage(),
-      
+      // home:SettingMain(),
       
       // Optional: Remove the debug banner
       debugShowCheckedModeBanner: false,

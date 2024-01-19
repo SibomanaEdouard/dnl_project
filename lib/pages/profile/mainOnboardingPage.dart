@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, deprecated_member_use, prefer_const_constructors_in_immutables, library_private_types_in_public_api, body_might_complete_normally_nullable, file_names
 
+import 'package:dnl_ui/pages/profile/bio.dart';
 import 'package:dnl_ui/pages/profile/drink.dart';
 import 'package:dnl_ui/pages/profile/name.dart';
 import 'package:dnl_ui/pages/profile/smoke.dart';
@@ -158,6 +159,21 @@ class _MainOnboardingPageState extends State<MainOnboardingPage> {
                               color: Colors.white,
                               child: Center(
                                 child: VideoPhotoPage(),
+                              ),
+                            ),
+                          ],
+                        );
+                        
+
+                      }else if(index==8){
+                                                return Column(
+                          children: [
+                            Container(
+                              width: double.infinity,
+                              height: MediaQuery.of(context).size.height - 105,
+                              color: Colors.white,
+                              child: Center(
+                                child: BioPage(),
                               ),
                             ),
                           ],
