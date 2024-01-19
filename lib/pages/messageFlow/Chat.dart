@@ -61,7 +61,9 @@ class _ChatScreenState extends State<ChatScreen> {
              Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) {
-                            return CallScreen();
+                            return CallPage(
+                              callID: "test",
+                            );
                           }),
                         );
             },

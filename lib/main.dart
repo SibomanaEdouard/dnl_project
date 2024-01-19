@@ -2,6 +2,7 @@
 
 import 'package:dnl_ui/pages/messageFlow/Chat.dart';
 import 'package:dnl_ui/pages/messageFlow/Message.dart';
+import 'package:dnl_ui/pages/notificationFlow/notification.dart';
 import 'package:dnl_ui/pages/settingFlow/setting_main.dart';
 import 'package:dnl_ui/pages/subscriptionFlow/SubscriptionPage.dart';
 import 'package:dnl_ui/pages/subscriptionFlow/payment/Payment.dart';
@@ -24,8 +25,9 @@ class MyApp extends StatelessWidget {
       //  home: MessagePage(),
       // home:ChatScreen(),
       // home:SubscriptionPage(),
-      home: Payment(),
-      
+      // home: Payment(),
+    
+      home: NotificationPage(),
       
       // Optional: Remove the debug banner
       debugShowCheckedModeBanner: false,
