@@ -2,6 +2,7 @@
 
 import 'package:dnl_ui/pages/messageFlow/Chat.dart';
 import 'package:dnl_ui/pages/messageFlow/Message.dart';
+import 'package:dnl_ui/pages/privacyflow/privacyPage.dart';
 import 'package:dnl_ui/pages/settingFlow/setting_main.dart';
 import 'package:dnl_ui/pages/subscriptionFlow/SubscriptionPage.dart';
 import 'package:dnl_ui/pages/subscriptionFlow/payment/Payment.dart';
@@ -20,13 +21,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       // Set the welcome screen as the home page
-     
+      // home: WelcomePage(),
       //  home: MessagePage(),
       // home:ChatScreen(),
-      // home:SubscriptionPage(),
-      home: Payment(),
-      
-      
+      // home:SettingMain(),
+      home:PrivacyPage(),
       // Optional: Remove the debug banner
       debugShowCheckedModeBanner: false,
     );
