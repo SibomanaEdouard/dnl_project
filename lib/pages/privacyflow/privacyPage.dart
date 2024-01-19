@@ -23,7 +23,10 @@ class _PrivacyPageState extends State<PrivacyPage> {
       appBar: AppBar(
          leading: Icon(Icons.chevron_left), 
         title: Text("Privacy Policy"),
+        centerTitle: true,
       ),
+    
+    
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15.0),
         child: Column(
