@@ -26,13 +26,8 @@ class MyApp extends StatelessWidget {
       // home: WelcomePage(),
       //  home: MessagePage(),
       // home:ChatScreen(),
-      // home:SubscriptionPage(),
-      
-      home: Payment(),
-    
-      // home: NotificationPage(),
-      // home: PrivacyPage(),
-      
+      home:SettingMain(),
+      // home:PrivacyPage(),
       // Optional: Remove the debug banner
       debugShowCheckedModeBanner: false,
     );

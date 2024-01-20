@@ -17,12 +17,10 @@ class SettingMain extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:  const Color(0xFFE94057),
-
+      backgroundColor: const Color(0xFFE94057),
       appBar: AppBar(
         toolbarHeight: 44,
-        backgroundColor:  const Color(0xFFE94057),
-
+        backgroundColor: const Color(0xFFE94057),
         elevation: 0,
       ),
       body: SingleChildScrollView(
@@ -112,14 +110,15 @@ class SettingMain extends StatelessWidget {
                   ]),
                   SizedBox(height: 10),
                   SizedBox(
-                    width: 400, // Set the width to match input field width
-                    height: 50, // Set the height to match input field height
+                    width: 400,
+                    height: 50,
                     child: ElevatedButton(
                       onPressed: () {
-                        // Handle "Logout" button press
+                        // Handle "Logout" button press by showing the confirmation dialog
+                        _showLogoutConfirmationDialog(context);
                       },
                       style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>( const Color(0xFFE94057)),
+                        backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFFE94057)),
                         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0),
@@ -156,7 +155,7 @@ class SettingMain extends StatelessWidget {
         padding: const EdgeInsets.all(10.0),
         decoration: BoxDecoration(
           border: Border.all(
-          color: const Color(0xFFD1939B),
+            color: const Color(0xFFD1939B),
             width: 2.0,
           ),
           borderRadius: BorderRadius.circular(10.0),
@@ -202,4 +201,96 @@ class SettingMain extends StatelessWidget {
       ),
     );
   }
+
+  void _showLogoutConfirmationDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text("Log out"),
+            IconButton(
+              icon: Icon(Icons.close, color: Colors.red),
+              onPressed: () {
+                // Close button pressed, close the dialog
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        ),
+        content: Container(
+          width: 300, // Adjust the width as needed
+          child: Text("Are you sure you want to log out?"),
+        ),
+        contentPadding: EdgeInsets.all(20.0), // Adjust padding as needed
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.zero,
+        ),
+        actions: [
+          SizedBox(width: 8.0), // Add spacing between close icon and buttons
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton(
+                onPressed: () {
+                  // Cancel button pressed, close the dialog
+                  Navigator.of(context).pop();
+                },
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                  shape: MaterialStateProperty.all<OutlinedBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.zero,
+                      side: BorderSide(color: const Color(0xFFE94057), width: 2.0),
+                    ),
+                  ),
+                  padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+                    EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                  ),
+                ),
+                child: Text(
+                  "Cancel",
+                  style: TextStyle(
+                    color: const Color(0xFFE94057),
+                  ),
+                ),
+              ),
+              SizedBox(width: 8.0), // Add spacing between buttons
+              ElevatedButton(
+                onPressed: () {
+                  // Logout button pressed, navigate to the home page
+                  Navigator.of(context).pop(); // Close the dialog
+                  // Navigate to the home page (Replace it with your actual home page route)
+                  Navigator.pushReplacementNamed(context, '/home');
+                },
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFFE94057)),
+                  shape: MaterialStateProperty.all<OutlinedBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.zero,
+                      side: BorderSide(color: const Color(0xFFE94057), width: 2.0),
+                    ),
+                  ),
+                  padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+                    EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                  ),
+                ),
+                child: Text(
+                  "Log out",
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      );
+    },
+  );
+}
+
+
 }
