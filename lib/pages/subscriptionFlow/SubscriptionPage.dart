@@ -1,8 +1,9 @@
-import 'dart:io';
 
+import 'package:dnl_ui/components/PayButton.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:dnl_ui/pages/subscriptionFlow/payment/payment_configuration.dart';
 
 class SubscriptionPage extends StatefulWidget {
   @override
@@ -26,7 +27,6 @@ class Subscription {
 class _SubscriptionPageState extends State<SubscriptionPage> {
   Subscription subscription =
       Subscription(DateTime.now(), DateTime.now(), "Free");
-  String os = Platform.operatingSystem;
 
   String subscriptionSelected = "";
   List<SubscriptionContainer> containers = [
@@ -341,27 +341,11 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                     height: 25,
                   ),
 
-                  SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(5)),
-                            padding: const EdgeInsets.only(top: 16, bottom: 16),
-                            backgroundColor: subscriptionSelected == ""
-                                ? const Color(0xffd1939b)
-                                : const Color(0xffe94057),
-                            foregroundColor: Colors.white),
-                        child: const Text("Subscribe now"),
-                      ))
+                  Payment()
                 ],
               )),
         ));
   }
 }
 
-
-void pay(){
-  
-}
+void pay() {}

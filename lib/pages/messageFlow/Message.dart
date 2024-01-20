@@ -1,8 +1,6 @@
-import 'package:dnl_ui/components/CustomButton.dart';
-import 'package:dnl_ui/pages/messageFlow/Chat.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-// lib/components/call.dart
+import 'package:dnl_ui/pages/messageFlow/Chat.dart';
 
 class Friend {
   String name;
@@ -114,6 +112,7 @@ class _MessagePageState extends State<MessagePage> {
                 ],
               ),
             ),
+          SizedBox(height: 16),
           Flexible(
             flex: 1,
             child: Container(
@@ -141,7 +140,34 @@ class _MessagePageState extends State<MessagePage> {
                           Dismissible(
                             key: UniqueKey(),
                             onDismissed: (direction) {
-                              DeleteMessageDialog();
+                              showDialog<String>(
+                                context: context,
+                                builder: (BuildContext context) => AlertDialog(
+                                  title: const Text('Confirmation'),
+                                  content: const Text(
+                                      'Do you want to delete this message?'),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      onPressed: () {
+                                        // Cancel the deletion, reinsert the item
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text('Cancel'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        // Confirm the deletion
+                                        setState(() {
+                                          // Remove the message from the messageList
+                                          messageList.remove(message);
+                                        });
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text('Confirm'),
+                                    ),
+                                  ],
+                                ),
+                              );
                             },
                             child: GestureDetector(
                               onTap: () {
@@ -246,34 +272,6 @@ class _MessagePageState extends State<MessagePage> {
           ),
         ],
       ),
-    );
-  }
-}
-
-class DeleteMessageDialog extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text('Confirmation'),
-      content: const Text('Do you want to delete this message?'),
-      actions: <Widget>[
-        TextButton(
-          onPressed: () {
-            // Close the dialog when the Close button is pressed
-            Navigator.of(context).pop();
-          },
-          child: const Text('Close'),
-        ),
-        TextButton(
-          onPressed: () {
-            // Perform the delete action when the Confirm button is pressed
-            // You can add your delete logic here
-            // For now, just close the dialog
-            Navigator.of(context).pop();
-          },
-          child: const Text('Confirm'),
-        ),
-      ],
     );
   }
 }
