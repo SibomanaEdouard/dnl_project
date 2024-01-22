@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "375245504",
+    "project_id": "dnl-client",
+    "storage_bucket": "dnl-client.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:375245504:android:dfd56de12a3f9f83cafb25",
+        "android_client_info": {
+          "package_name": "com.company.dnl_clinet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "375245504-lmdvughho27kfcd0h9smulapmbfcvo60.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0A4RGwhrA90HTjYUKrRFq7ArpPSNkxmE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "375245504-lmdvughho27kfcd0h9smulapmbfcvo60.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "375245504-ua2d1t38rs9e53ju2gomsse6m1r06qck.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.company.dnclient"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

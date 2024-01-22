@@ -1,227 +1,277 @@
-// ignore_for_file: unused_import, prefer_const_constructors, camel_case_types, file_names
+// ignore_for_file: prefer_const_constructors, must_be_immutable, library_private_types_in_public_api, non_constant_identifier_names
 
-import 'package:dnl_ui/pages/profile/profileHome.dart';
+import 'dart:async';
+
+import 'package:dnl_ui/blocs/auth/auth_bloc.dart';
+import 'package:dnl_ui/core/values/custom_text_style.dart';
+import 'package:dnl_ui/core/widgets/button.dart';
+import 'package:dnl_ui/core/widgets/pin_code_input.dart';
+import 'package:dnl_ui/core/widgets/static_progress_bar.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 
-import '../../components/CustomButton.dart';
 
-class otpPage extends StatelessWidget {
-  otpPage({super.key});
+enum OTPState { notStarted, shouldArrive, sendAgain, didNotGetCode, success }
 
-  final title4 = TextStyle(fontSize: 24,fontWeight: FontWeight.w500);
-  final title5 = TextStyle(color: Colors.grey);
+class AuthOTPPage extends StatefulWidget {
+  String phoneNumber;
+  String type;
+
+  AuthOTPPage({super.key, required this.phoneNumber, required this.type});
+
+  static Route<void> route({required phoneNumber, required type}) =>
+      MaterialPageRoute<void>(
+          builder: (_) => AuthOTPPage(phoneNumber: phoneNumber, type: type));
+
+  @override
+  _AuthOTPPageState createState() => _AuthOTPPageState();
+}
+
+class _AuthOTPPageState extends State<AuthOTPPage> {
+  TextEditingController controller = TextEditingController(text: "");
+  int pinLength = 6;
+  bool hasError = false;
+  String? OTPCode;
+  OTPState step = OTPState.notStarted;
+  int timeoutCount = 60;
+  late Timer timer;
+
+  @override
+  void initState() {
+    super.initState();
+
+    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (timeoutCount >= 0 && step == OTPState.shouldArrive) {
+        setState(() {
+          timeoutCount--;
+        });
+        if (timeoutCount == 0) {
+          setState(() {
+            step = OTPState.didNotGetCode;
+          });
+        }
+      }
+    });
+
+    AuthState authState = context.read<AuthBloc>().state;
+    if (authState is AuthLoading && authState.type == "PhoneSignInRequested") {
+      context.loaderOverlay.show();
+    }
+    setState(() {});
+  }
+
+  @override
+  void dispose() {
+    timer.cancel();
+    super.dispose();
+  }
+
+  void countSeconds() {
+    context.read<AuthBloc>().add(PhoneSignInRequested(widget.phoneNumber));
+    controller.clear();
+    setState(() {
+      timeoutCount = 0;
+      step = OTPState.notStarted;
+    });
+  }
+
+  void onNextProcess() async {
+    context.read<AuthBloc>().add(VerifyOTPRequested(controller.text));
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        padding: EdgeInsets.all(20),
-          child: Column(
-            children: [
-               Padding(
-                 padding: const EdgeInsets.only(top: 70.0),
-                 child: Container(
-                  width: 60,
-                  height: 60,
-                  padding: EdgeInsets.all(10),
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: Colors.pink[50],
-                    borderRadius: BorderRadius.circular(50), // Adjust the border radius as needed
-                  ),
-                  child: Image.asset("assets/icons/Icon - Shield.png"),
-                               ),
-               ),
-              const SizedBox(height: 20,),
-              Text("Enter your verification code",style: GoogleFonts.manrope(textStyle: title4),),
-              const SizedBox(height: 15,),
-              Text("The code has been sent to your number:\n"
-                "+380 97 777 11 11",
-                 textAlign: TextAlign.center,
-                style: GoogleFonts.manrope(textStyle: title5),
-              ),
-
-              Padding(
-                padding: const EdgeInsets.only(top: 14.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return BlocListener<AuthBloc, AuthState>(
+        listener: (context, state) {
+          if (state is AuthLoading && state.type == "PhoneSignInRequested") {
+            context.loaderOverlay.show();
+            return;
+          } else if (state is AuthLoading &&
+              state.type == "VerifyOTPRequested") {
+            context.loaderOverlay.show();
+            return;
+          } else if (state is AuthLoading && state.type == "SMSCodeSent") {
+            setState(() {
+              timeoutCount = 60;
+              step = OTPState.shouldArrive;
+            });
+          }
+          if (state is Authenticated) {
+            setState(() {
+              timeoutCount = 0;
+              step = OTPState.success;
+            });
+          }
+          if (state is AuthError) {
+            setState(() {
+              timeoutCount = 0;
+              step = OTPState.sendAgain;
+            });
+          }
+          context.loaderOverlay.hide();
+        },
+        child: Scaffold(
+            backgroundColor: Theme.of(context).colorScheme.secondary,
+            body: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    SizedBox(
-                      height: 68,
-                      width: 64,
-                      child: TextFormField(
-                        onChanged: (value){
-                          if(value.length == 1){
-                            FocusScope.of(context).nextFocus();
-                          }
-                        },
-                        style: TextStyle(color: Color(0xFFFB685E), fontSize: 16.0),
-                        // keyboardType: TextInputType.number,
-                        textAlign: TextAlign.center,
-                        inputFormatters: [
-                          LengthLimitingTextInputFormatter(1),
-                          FilteringTextInputFormatter.digitsOnly,
-                        ],
-                        decoration: const InputDecoration(
-                          contentPadding: EdgeInsets.only(bottom: 10.0), // Adjust padding as needed
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Color(0xFFFB685E)), // Color of the border
+                    Expanded(
+                        child: Column(
+                      children: [
+                        Row(children: const <Widget>[
+                          SizedBox(width: 8),
+                          Expanded(
+                            child: StaticProgressBar(count: 2, current: 2),
                           ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Color(0xFFFB685E)), // Color of the border when focused
+                          SizedBox(width: 8),
+                        ]),
+                        const SizedBox(height: 12),
+                        SvgPicture.asset(
+                          "assets/icons/verify.svg",
+                          fit: BoxFit.cover,
+                        ),
+                        const SizedBox(height: 12),
+                        Text('Enter your verification code',
+                            style: CustomTextStyle.getTitleStyle()),
+                        const SizedBox(height: 12),
+                        Text('The code has been sent to your number:',
+                            style: CustomTextStyle.getDescStyle(
+                                Theme.of(context).colorScheme.onSurface)),
+                        const SizedBox(height: 4),
+                        RichText(
+                          text: TextSpan(
+                            style: CustomTextStyle.getDescStyle(
+                                Theme.of(context).colorScheme.onSurface),
+                            children: <TextSpan>[
+                              TextSpan(text: "${widget.phoneNumber} "),
+                            ],
                           ),
                         ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 68,
-                      width: 64,
-                      child: TextFormField(
-                        onChanged: (value){
-                          if(value.length == 1){
-                            FocusScope.of(context).nextFocus();
-                          }
-                        },
-                        style: TextStyle(color: Color(0xFFFB685E), fontSize: 16.0),
-                        // keyboardType: TextInputType.number,
-                        textAlign: TextAlign.center,
-                        inputFormatters: [
-                          LengthLimitingTextInputFormatter(1),
-                          FilteringTextInputFormatter.digitsOnly,
-                        ],
-                        decoration: const InputDecoration(
-                          contentPadding: EdgeInsets.only(bottom: 10.0), // Adjust padding as needed
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Color(0xFFFB685E)), // Color of the border
-                          ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Color(0xFFFB685E)), // Color of the border when focused
-                          ),
+                        const SizedBox(height: 24),
+                        PinCodeTextField(
+                          autofocus: true,
+                          controller: controller,
+                          hideCharacter: false,
+                          highlight: false,
+                          defaultBorderColor:
+                              Theme.of(context).colorScheme.onSurface,
+                          hasTextBorderColor:
+                              Theme.of(context).colorScheme.primary,
+                          maxLength: pinLength,
+                          hasError: hasError,
+                          onTextChanged: (text) {
+                            setState(() {
+                              hasError = false;
+                            });
+                          },
+                          onDone: (text) {
+                            // onNextProcess(text);
+                            setState(() {
+                              OTPCode = text;
+                            });
+                          },
+                          hasUnderline: true,
+                          wrapAlignment: WrapAlignment.spaceBetween,
+                          pinTextStyle: const TextStyle(fontSize: 28.0),
+                          pinTextAnimatedSwitcherTransition:
+                              ProvidedPinBoxTextAnimation.scalingTransition,
+                          pinBoxColor: Colors.transparent,
+                          pinTextAnimatedSwitcherDuration:
+                              const Duration(milliseconds: 300),
+                          highlightAnimationBeginColor:
+                              Theme.of(context).colorScheme.onSecondary,
+                          highlightAnimationEndColor: Colors.white12,
+                          keyboardType: TextInputType.number,
                         ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 68,
-                      width: 64,
-                      child: TextFormField(
-                        onChanged: (value){
-                          if(value.length == 1){
-                            FocusScope.of(context).nextFocus();
-                          }
-                        },
-                        style: TextStyle(color: Color(0xFFFB685E), fontSize: 16.0),
-                        // keyboardType: TextInputType.number,
-                        textAlign: TextAlign.center,
-                        inputFormatters: [
-                          LengthLimitingTextInputFormatter(1),
-                          FilteringTextInputFormatter.digitsOnly,
-                        ],
-                        decoration: const InputDecoration(
-                          contentPadding: EdgeInsets.only(bottom: 10.0), // Adjust padding as needed
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Color(0xFFFB685E)), // Color of the border
-                          ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Color(0xFFFB685E)), // Color of the border when focused
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 68,
-                      width: 64,
-                      child: TextFormField(
-                        onChanged: (value){
-                          if(value.length == 1){
-                            FocusScope.of(context).nextFocus();
-                          }
-                        },
-                        style: TextStyle(color: Color(0xFFFB685E), fontSize: 16.0),
-                        // keyboardType: TextInputType.number,
-                        textAlign: TextAlign.center,
-                        inputFormatters: [
-                          LengthLimitingTextInputFormatter(1),
-                          FilteringTextInputFormatter.digitsOnly,
-                        ],
-                        decoration: const InputDecoration(
-                          contentPadding: EdgeInsets.only(bottom: 10.0), // Adjust padding as needed
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Color(0xFFFB685E)), // Color of the border
-                          ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Color(0xFFFB685E)), // Color of the border when focused
-                          ),
-                        ),
-                      ),
-                    ),
+                      ],
+                    )),
+                    const SizedBox(height: 20),
+                    if (step == OTPState.shouldArrive)
+                      textArrivedIn(timeoutCount)
+                    else if (step == OTPState.didNotGetCode)
+                      dontGetACode()
+                    else if (step == OTPState.sendAgain)
+                      sendAgain(),
+                    const SizedBox(height: 20),
+                    Row(children: <Widget>[
+                      const SizedBox(width: 8),
+                      Expanded(
+                          child: Button(
+                              title: "BACK",
+                              flag: true,
+                              outlined: true,
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              })),
+                      const SizedBox(width: 8),
+                      Expanded(
+                          child: Button(
+                              title: "NEXT",
+                              flag: true,
+                              onPressed: () {
+                                onNextProcess();
+                              })),
+                      const SizedBox(width: 8),
+                    ]),
+                    const SizedBox(height: 16),
                   ],
-                ),
-              ),
+                ))));
+  }
 
-              const SizedBox(height: 100,),
+  Widget textArrivedIn(int seconds) {
+    return RichText(
+      text: TextSpan(
+        style: CustomTextStyle.getDescStyle(
+            Theme.of(context).colorScheme.onSecondary),
+        children: <TextSpan>[
+          TextSpan(text: 'Code is available within ${seconds}s.'),
+        ],
+      ),
+    );
+  }
 
-              Row(
-                children: [
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-                        decoration: BoxDecoration(
-                          color: Colors.transparent, // Set the background color
-                          borderRadius: BorderRadius.circular(25),
-                          border: Border.all(color: Color(0xFFFB685E), width: 2.0),
-                        ),
-                        child: Text(
-                          'BACK',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Color(0xFFFB685E), // Set text color
-                            fontWeight: FontWeight.bold, // Set text font weight
-                            fontSize: 16.0, // Set text font size
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 10), // Add some space between the buttons
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) {
-                            return profileHome();
-                          }),
-                        );
-                      },
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-                        decoration: BoxDecoration(
-                          color: Color(0xFFFB685E), // Set the background color for confirmation
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                        child: Text(
-                          'CONFIRM',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.white, // Set text color
-                            fontWeight: FontWeight.bold, // Set text font weight
-                            fontSize: 16.0, // Set text font size
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              )
+  Widget sendAgain() {
+    TextStyle linkStyle = const TextStyle(decoration: TextDecoration.underline);
+    return RichText(
+      text: TextSpan(
+        style: CustomTextStyle.getDescStyle(
+            Theme.of(context).colorScheme.onSecondary),
+        children: <TextSpan>[
+          const TextSpan(text: 'Wrong code. Please '),
+          TextSpan(
+              text: 'send again',
+              style: linkStyle,
+              recognizer: TapGestureRecognizer()
+                ..onTap = () {
+                  countSeconds();
+                  controller.clearComposing();
+                }),
+        ],
+      ),
+    );
+  }
 
-            ],
-          ),
+  Widget dontGetACode() {
+    TextStyle linkStyle = const TextStyle(decoration: TextDecoration.underline);
+    return RichText(
+      text: TextSpan(
+        style: CustomTextStyle.getDescStyle(
+            Theme.of(context).colorScheme.onSecondary),
+        children: <TextSpan>[
+          TextSpan(
+              text: 'Didn\'t get a code?',
+              style: linkStyle,
+              recognizer: TapGestureRecognizer()
+                ..onTap = () {
+                  countSeconds();
+                }),
+        ],
       ),
     );
   }

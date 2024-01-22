@@ -10,8 +10,10 @@ import 'authFlow/phoneNumberPage.dart';
 class WelcomePage extends StatelessWidget {
   WelcomePage({Key? key}) : super(key: key);
 
-  final title1 = TextStyle(fontSize: 36, fontWeight: FontWeight.w700, color: Colors.white);
-  final title2 = TextStyle(color: Colors.white,fontWeight: FontWeight.w700,fontSize: 18);
+  final title1 =
+      TextStyle(fontSize: 36, fontWeight: FontWeight.w700, color: Colors.white);
+  final title2 =
+      TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 18);
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +38,7 @@ class WelcomePage extends StatelessWidget {
                   height: 10,
                 ),
                 Text("Enjoy the true love",
-                    style:GoogleFonts.manrope(textStyle: title2)),
+                    style: GoogleFonts.manrope(textStyle: title2)),
               ],
             ),
             Column(
@@ -55,12 +57,11 @@ class WelcomePage extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) {
-                            return phoneNumberPage();
+                            return SignupPage();
                           }),
                         );
                       },
                     ),
-
                     const SizedBox(
                       height: 10,
                     ),
@@ -71,16 +72,18 @@ class WelcomePage extends StatelessWidget {
                         borderColor: Colors.white,
                         onPressed: () {
                           Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) {
-                            return SigninPage();
-                          }),
-                        );
+                            context,
+                            MaterialPageRoute(builder: (context) {
+                              return SigninPage();
+                            }),
+                          );
                         }),
                   ],
                 ),
 
-                const SizedBox(height: 10,),
+                const SizedBox(
+                  height: 10,
+                ),
 
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -126,9 +129,9 @@ class WelcomePage extends StatelessWidget {
                                 style: TextStyle(
                                   decoration: TextDecoration.underline,
                                   fontWeight: FontWeight.bold,
-                                  decorationThickness:
-                                      2.5,
-                                  decorationColor: Colors.white,                                ),
+                                  decorationThickness: 2.5,
+                                  decorationColor: Colors.white,
+                                ),
                               ),
                               TextSpan(
                                 text: " and",
@@ -144,7 +147,13 @@ class WelcomePage extends StatelessWidget {
                       children: [
                         Text(
                           "Cookies Policy.",
-                          style: TextStyle(color: Colors.white,decoration: TextDecoration.underline,decorationColor: Colors.white, fontSize: 12,fontWeight: FontWeight.bold,),
+                          style: TextStyle(
+                            color: Colors.white,
+                            decoration: TextDecoration.underline,
+                            decorationColor: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ],
                     ),
